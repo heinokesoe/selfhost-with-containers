@@ -1,0 +1,4 @@
+#!/bin/bash
+
+systemctl --user disable 'podman-compose@filebrowser'
+systemctl --user stop 'podman-compose@filebrowser'

@@ -1,0 +1,20 @@
+#!/bin/bash
+
+source ~/.bashrc
+
+screego="${SELFHOSTDIR}/screego"
+
+if [[ ! -f ${screego}/.done ]] ; then
+    secret=$(openssl rand -hex 16)
+    turn_secret=$(cat ${SELFHOSTDIR}/coturn/.secret)
+    read -rp "Enter domain name for screego: " domain
+    sed -i "s/change_domain_screego/$domain/g" ${SELFHOSTDIR}/traefik/dynamic.yml
+    sed -i "s/change_secret/$secret/g" ${screego}/server.config
+    sed -i "s/change_ip/$IP/g" ${screego}/server.config
+    sed -i "s/change_turn_secret/$turn_secret/g" ${screego}/server.config
+    podman-compose -f ${screego}/compose.yml systemd -a register
+    systemctl --user enable 'podman-compose@screego'
+    touch ${screego}/.done
+fi
+
+systemctl --user start 'podman-compose@screego'

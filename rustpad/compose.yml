@@ -1,0 +1,13 @@
+version: "3"
+services:
+  rustpad:
+    image: docker.io/ekzhang/rustpad:latest
+    container_name: rustpad
+    networks:
+      - traefik
+    restart: unless-stopped
+    labels:
+      - "io.containers.autoupdate=registry"
+networks:
+  traefik:
+    external: true

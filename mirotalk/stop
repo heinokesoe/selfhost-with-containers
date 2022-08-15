@@ -1,0 +1,4 @@
+#!/bin/bash
+
+systemctl --user disable 'podman-compose@mirotalk'
+systemctl --user stop 'podman-compose@mirotalk'

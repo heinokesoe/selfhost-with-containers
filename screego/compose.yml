@@ -1,0 +1,15 @@
+version: "3"
+services:
+  screego:
+    image: docker.io/screego/server:amd64-1
+    container_name: screego
+    networks:
+      - traefik
+    volumes:
+      - ./server.config:/etc/screego/server.config
+    restart: unless-stopped
+    labels:
+      - "io.containers.autoupdate=registry"
+networks:
+  traefik:
+    external: true

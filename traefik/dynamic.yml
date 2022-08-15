@@ -1,0 +1,132 @@
+http:
+  routers:
+    dozzle:
+      entryPoints:
+        - "websecure"
+      rule: "Host(`change_domain_dozzle`)"
+      tls: {}
+      service: dozzle
+    filebrowser:
+      entryPoints:
+        - "websecure"
+      rule: "Host(`change_domain_filebrowser`)"
+      tls: {}
+      service: filebrowser
+    gitea:
+      entryPoints:
+        - "websecure"
+      rule: "Host(`change_domain_gitea`)"
+      tls: {}
+      service: gitea
+    lighttpd:
+      entryPoints:
+        - "websecure"
+      rule: "Host(`change_domain_kms`) || Host(`change_domain_portfolio`)"
+      middlewares:
+       - secure-headers
+      tls:
+        options: default
+      service: lighttpd
+    mirotalk:
+      entryPoints:
+        - "websecure"
+      rule: "Host(`change_domain_mirotalk`)"
+      tls: {}
+      service: mirotalk
+    qbittorrent:
+      entryPoints:
+        - "websecure"
+      rule: "Host(`change_domain_qbittorrent`)"
+      tls: {}
+      service: qbittorrent
+    rustpad:
+      entryPoints:
+        - "websecure"
+      rule: "Host(`change_domain_rustpad`)"
+      tls: {}
+      service: rustpad
+    rwtxt:
+      entryPoints:
+        - "websecure"
+      rule: "Host(`change_domain_rwtxt`)"
+      tls: {}
+      service: rwtxt
+    screego:
+      entryPoints:
+        - "websecure"
+      rule: "Host(`change_domain_screego`)"
+      tls: {}
+      service: screego
+  services:
+    dozzle:
+      loadBalancer:
+        servers:
+          - url: "http://dozzle:8080"
+    filebrowser:
+      loadBalancer:
+        servers:
+          - url: "http://filebrowser"
+    gitea:
+      loadBalancer:
+        servers:
+          - url: "http://gitea:3000"
+    lighttpd:
+      loadBalancer:
+        servers:
+          - url: "http://lighttpd"
+    mirotalk:
+      loadBalancer:
+        servers:
+          - url: "http://mirotalk:3000"
+    qbittorrent:
+      loadBalancer:
+        servers:
+          - url: "http://qbittorrent:8080"
+    rustpad:
+      loadBalancer:
+        servers:
+          - url: "http://rustpad:3030"
+    rwtxt:
+      loadBalancer:
+        servers:
+          - url: "http://rwtxt:8152"
+    screego:
+      loadBalancer:
+        servers:
+          - url: "http://screego:5080"
+  middlewares:
+    secure-headers:
+      headers:
+        frameDeny: true
+        stsIncludeSubdomains: true
+        stsPreload: true
+        stsSeconds: 63072000
+        forceStsHeader: true
+        contentTypeNosniff: true
+        accessControlAllowMethods:
+          - GET
+          - OPTIONS
+          - PUT
+        accessControlMaxAge: 100
+        addVaryHeader: true
+        hostsProxyHeaders:
+          - X-Forwarded-Host
+        browserXssFilter: true
+        referrerPolicy:
+          - same-origin
+        permissionsPolicy: "camera=(), microphone=(), geolocation=(), payment=(), usb=(), vr=()"
+        customResponseHeaders:
+          X-Robots-Tag: none
+tls:
+  options:
+    default:
+      minVersion: VersionTLS12
+      cipherSuites:
+       # Recommended ciphers for TLSv1.2
+       - TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+       - TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+       - TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305
+       # Recommended ciphers for TLSv1.3
+       - TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384
+       - TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256
+       - TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305

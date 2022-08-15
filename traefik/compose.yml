@@ -1,0 +1,26 @@
+version: "3"
+services:
+  traefik:
+    image: docker.io/library/traefik:latest
+    container_name: traefik
+    environment:
+      - CF_API_EMAIL=change_mail
+      - CF_DNS_API_TOKEN=change_token
+    networks:
+      - traefik
+    ports:
+      - "80:80"
+      - "443:443"
+      - "127.0.0.1:8080:8080"
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - $XDG_RUNTIME_DIR/podman/podman.sock:/var/run/docker.sock:ro
+      - ./traefik.yml:/traefik.yml:ro
+      - ./acme.json:/acme.json
+      - ./dynamic.yml:/dynamic.yml:ro
+    restart: unless-stopped
+    labels:
+      - "io.containers.autoupdate=registry"
+networks:
+  traefik:
+    external: true

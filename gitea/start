@@ -1,0 +1,15 @@
+#!/bin/bash
+
+source ~/.bashrc
+
+gitea="${SELFHOSTDIR}/gitea"
+
+if [[ ! -f ${gitea}/.done ]] ; then
+    read -rp "Enter domain name for gitea: " domain
+    sed -i "s/change_domain_gitea/$domain/g" ${SELFHOSTDIR}/traefik/dynamic.yml
+    podman-compose -f ${gitea}/compose.yml systemd -a register
+    systemctl --user enable 'podman-compose@gitea'
+    touch ${gitea}/.done
+fi
+
+systemctl --user start 'podman-compose@gitea'

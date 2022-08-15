@@ -1,0 +1,4 @@
+#!/bin/bash
+
+systemctl --user disable 'podman-compose@rwtxt'
+systemctl --user stop 'podman-compose@rwtxt'

@@ -1,0 +1,20 @@
+version: "3"
+services:
+  coturn_secret:
+    image: docker.io/coturn/coturn:alpine
+    container_name: coturn_secret
+    network_mode: host
+    volumes:
+      - ./turn_with_secret.conf:/etc/coturn/turnserver.conf
+    restart: unless-stopped
+    labels:
+      - "io.containers.autoupdate=registry"
+  coturn_password:
+    image: docker.io/coturn/coturn:alpine
+    container_name: coturn_password
+    network_mode: host
+    volumes:
+      - ./turn_with_password.conf:/etc/coturn/turnserver.conf
+    restart: unless-stopped
+    labels:
+      - "io.containers.autoupdate=registry"

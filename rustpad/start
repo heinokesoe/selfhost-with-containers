@@ -1,0 +1,15 @@
+#!/bin/bash
+
+source ~/.bashrc
+
+rustpad="${SELFHOSTDIR}/rustpad"
+
+if [[ ! -f ${rustpad}/.done ]] ; then
+    read -rp "Enter domain name for rustpad: " domain
+    sed -i "s/change_domain_rustpad/$domain/g" ${SELFHOSTDIR}/traefik/dynamic.yml
+    podman-compose -f ${rustpad}/compose.yml systemd -a register
+    systemctl --user enable 'podman-compose@rustpad'
+    touch ${rustpad}/.done
+fi
+
+systemctl --user start 'podman-compose@rustpad'

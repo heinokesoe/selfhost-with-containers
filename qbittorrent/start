@@ -1,0 +1,15 @@
+#!/bin/bash
+
+source ~/.bashrc
+
+qbittorrent="${SELFHOSTDIR}/qbittorrent"
+
+if [[ ! -f ${qbittorrent}/.done ]] ; then
+    read -rp "Enter domain name for qbittorrent: " domain
+    sed -i "s/change_domain_qbittorrent/$domain/g" ${SELFHOSTDIR}/traefik/dynamic.yml
+    podman-compose -f ${qbittorrent}/compose.yml systemd -a register
+    systemctl --user enable 'podman-compose@qbittorrent'
+    touch ${qbittorrent}/.done
+fi
+
+systemctl --user start 'podman-compose@qbittorrent'

@@ -1,0 +1,22 @@
+#!/bin/bash
+
+source ~/.bashrc
+
+dozzle="${SELFHOSTDIR}/dozzle"
+
+if [[ ! -f ${dozzle}/.done ]] ; then
+    read -rp "Enter username for dozzle: " username
+    read -srp "Enter password for dozzle: " password
+    echo
+    read -rp "Enter domain name for dozzle: " domain
+    key=$(openssl rand -hex 16)
+    sed -i "s/change_domain_dozzle/$domain/g" ${SELFHOSTDIR}/traefik/dynamic.yml
+    sed -i "s/change_username/$username/g" ${dozzle}/compose.yml
+    sed -i "s/change_password/$password/g" ${dozzle}/compose.yml
+    sed -i "s/change_key/$key/g" ${dozzle}/compose.yml
+    podman-compose -f ${dozzle}/compose.yml systemd -a register
+    systemctl --user enable 'podman-compose@dozzle'
+    touch ${dozzle}/.done
+fi
+
+systemctl --user start 'podman-compose@dozzle'

@@ -1,0 +1,16 @@
+version: "3"
+services:
+  filebrowser:
+    image: docker.io/filebrowser/filebrowser:latest
+    container_name: filebrowser
+    networks:
+      - traefik
+    volumes:
+      - $HOME:/srv
+    command: -d /srv/database.db
+    restart: unless-stopped
+    labels:
+      - "io.containers.autoupdate=registry"
+networks:
+  traefik:
+    external: true

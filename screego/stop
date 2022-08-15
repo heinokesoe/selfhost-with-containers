@@ -1,0 +1,4 @@
+#!/bin/bash
+
+systemctl --user disable 'podman-compose@screego'
+systemctl --user stop 'podman-compose@screego'

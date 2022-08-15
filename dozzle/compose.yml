@@ -1,0 +1,19 @@
+version: "3"
+services:
+  dozzle:
+    image: docker.io/amir20/dozzle:latest
+    container_name: dozzle
+    networks:
+      - traefik
+    volumes:
+      - $XDG_RUNTIME_DIR/podman/podman.sock:/var/run/docker.sock
+    environment:
+      - DOZZLE_USERNAME=change_username
+      - DOZZLE_PASSWORD=change_password
+      - DOZZLE_KEY=change_key
+    restart: unless-stopped
+    labels:
+      - "io.containers.autoupdate=registry"
+networks:
+  traefik:
+    external: true

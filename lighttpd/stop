@@ -1,0 +1,4 @@
+#!/bin/bash
+
+systemctl --user disable 'podman-compose@lighttpd'
+systemctl --user stop 'podman-compose@lighttpd'

@@ -1,0 +1,16 @@
+version: "3"
+services:
+  lighttpd:
+    image: docker.io/heinokesoe/lighttpd:latest
+    container_name: lighttpd
+    networks:
+      - traefik
+    volumes:
+      - ./www:/var/www
+    command: -D -f /var/www/lighttpd.conf
+    restart: unless-stopped
+    labels:
+      - "io.containers.autoupdate=registry"
+networks:
+  traefik:
+    external: true

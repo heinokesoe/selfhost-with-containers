@@ -1,0 +1,15 @@
+#!/bin/bash
+
+source ~/.bashrc
+
+rustdesk="${SELFHOSTDIR}/rustdesk"
+
+if [[ ! -f ${rustdesk}/.done ]] ; then
+    read -rp "Enter domain name for rustdesk: " domain
+    sed -i "s/change_domain/$domain/" ${rustdesk}/compose.yml
+    podman-compose -f ${rustdesk}/compose.yml systemd -a register
+    systemctl --user enable 'podman-compose@rustdesk'
+    touch ${rustdesk}/.done
+fi
+
+systemctl --user start 'podman-compose@rustdesk'

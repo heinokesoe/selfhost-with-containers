@@ -1,0 +1,21 @@
+#!/bin/bash
+
+source ~/.bashrc
+
+traefik="${SELFHOSTDIR}/traefik"
+
+if [[ ! -f ${traefik}/.done ]] ; then
+    touch ${traefik}/acme.json
+    chmod 600 ${traefik}/acme.json
+    read -rp "Enter cloudflare email: " mail
+    read -rp "Enter cloudflare dns api token: " token
+    read -rp "Enter domain name to do dns challenge: " domain
+    sed -i "s/change_mail/$mail/g" ${traefik}/compose.yml ${traefik}/traefik.yml
+    sed -i "s/change_token/$token/g" ${traefik}/compose.yml
+    sed -i "s/change_domain/$domain/g" ${traefik}/traefik.yml
+    podman-compose -f ${traefik}/compose.yml systemd -a register
+    systemctl --user enable 'podman-compose@traefik'
+    touch ${traefik}/.done
+fi
+
+systemctl --user start 'podman-compose@traefik'

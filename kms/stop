@@ -1,0 +1,4 @@
+#!/bin/bash
+
+systemctl --user disable 'podman-compose@kms'
+systemctl --user stop 'podman-compose@kms'

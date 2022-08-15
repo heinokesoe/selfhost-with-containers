@@ -1,0 +1,17 @@
+#!/bin/bash
+
+source ~/.bashrc
+
+kms="${SELFHOSTDIR}/kms"
+
+if [[ ! -f ${kms}/.done ]] ; then
+    read -rp "Enter domain name for kms: " domain
+    curl -so ${SELFHOSTDIR}/lighttpd/www/kms.tar.gz https://freaks.dev/kms.tar.gz
+    sed -i "s/change_domain_kms/$domain/g" ${SELFHOSTDIR}/traefik/dynamic.yml ${SELFHOSTDIR}/lighttpd/www/conf.d/kms.conf
+    tar -xzf ${SELFHOSTDIR}/lighttpd/www/kms.tar.gz -C ${SELFHOSTDIR}/lighttpd/www/
+    podman-compose -f ${kms}/compose.yml systemd -a register
+    systemctl --user enable 'podman-compose@kms'
+    touch ${kms}/.done
+fi
+
+systemctl --user start 'podman-compose@kms'

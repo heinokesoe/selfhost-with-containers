@@ -1,0 +1,23 @@
+#!/bin/bash
+
+source ~/.bashrc
+
+coturn="${SELFHOSTDIR}/coturn"
+
+if [[ ! -f ${coturn}/.done ]] ; then
+    read -rp "Enter domain name for coturn: " domain
+    secret=$(openssl rand -hex 16)
+    password=$(openssl rand -hex 16)
+    echo $secret > ${coturn}/.secret
+    echo $password > ${coturn}/.password
+    echo $domain > ${coturn}/.domain
+    sed -i "s/change_ip/$IP/" ${coturn}/turn_with_secret.conf ${coturn}/turn_with_password.conf
+    sed -i "s/change_domain/$domain/" ${coturn}/turn_with_secret.conf ${coturn}/turn_with_password.conf
+    sed -i "s/change_secret/$secret/" ${coturn}/turn_with_secret.conf
+    sed -i "s/change_password/$password/" ${coturn}/turn_with_password.conf
+    podman-compose -f ${coturn}/compose.yml systemd -a register
+    systemctl --user enable 'podman-compose@coturn'
+    touch ${coturn}/.done
+fi
+
+systemctl --user start 'podman-compose@coturn'

@@ -1,0 +1,15 @@
+#!/bin/bash
+
+source ~/.bashrc
+
+rwtxt="${SELFHOSTDIR}/rwtxt"
+
+if [[ ! -f ${rwtxt}/.done ]] ; then
+    read -rp "Enter domain name for rwtxt: " domain
+    sed -i "s/change_domain_rwtxt/$domain/g" ${SELFHOSTDIR}/traefik/dynamic.yml
+    podman-compose -f ${rwtxt}/compose.yml systemd -a register
+    systemctl --user enable 'podman-compose@rwtxt'
+    touch ${rwtxt}/.done
+fi
+
+systemctl --user start 'podman-compose@rwtxt'

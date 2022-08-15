@@ -1,0 +1,12 @@
+version: "3"
+services:
+  glider:
+    image: docker.io/nadoo/glider:latest
+    container_name: glider
+    ports:
+      - "54321:54321"
+      - "44321:44321"
+    command: -verbose -listen socks5://change_username_socks5:change_password_socks5@:54321 -listen ss://AES-128-CFB:change_password_shadowsocks@:44321 -dnsserver 8.8.8.8
+    restart: unless-stopped
+    labels:
+      - "io.containers.autoupdate=registry"

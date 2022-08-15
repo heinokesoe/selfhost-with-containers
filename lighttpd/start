@@ -1,0 +1,17 @@
+#!/bin/bash
+
+source ~/.bashrc
+
+lighttpd="${SELFHOSTDIR}/lighttpd"
+
+if [[ ! -f ${lighttpd}/.done ]] ; then
+    read -rp "Enter domain name for portfolio: " domain
+    curl -so ${lighttpd}/www/portfolio.tar.gz https://freaks.dev/portfolio.tar.gz
+    sed -i "s/change_domain_portfolio/$domain/g" ${SELFHOSTDIR}/traefik/dynamic.yml ${SELFHOSTDIR}/lighttpd/www/conf.d/portfolio.conf
+    tar -xzf ${lighttpd}/www/portfolio.tar.gz -C ${lighttpd}/www/
+    podman-compose -f ${lighttpd}/compose.yml systemd -a register
+    systemctl --user enable 'podman-compose@lighttpd'
+    touch ${lighttpd}/.done
+fi
+
+systemctl --user start 'podman-compose@lighttpd'

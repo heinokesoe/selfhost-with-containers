@@ -1,0 +1,15 @@
+version: "3"
+services:
+  mirotalk:
+    image: docker.io/heinokesoe/mirotalk:latest
+    container_name: mirotalk
+    networks:
+      - traefik
+    volumes:
+      - ./mirotalk.env:/src/.env
+    restart: unless-stopped
+    labels:
+      - "io.containers.autoupdate=registry"
+networks:
+  traefik:
+    external: true

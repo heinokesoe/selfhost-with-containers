@@ -1,0 +1,22 @@
+version: "3"
+services:
+  qbittorrent:
+    image: docker.io/linuxserver/qbittorrent:latest
+    container_name: qbittorrent
+    environment:
+      - TZ=Asia/Yangon
+      - WEBUI_PORT=8080
+    networks:
+      - traefik
+    ports:
+      - "6881:6881"
+      - "6881:6881/udp"
+    volumes:
+      - ./config:/config
+      - ./downloads:/downloads
+    restart: unless-stopped
+    labels:
+      - "io.containers.autoupdate=registry"
+networks:
+  traefik:
+    external: true

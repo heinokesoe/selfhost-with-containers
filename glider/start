@@ -1,0 +1,21 @@
+#!/bin/bash
+
+source ~/.bashrc
+
+glider="${SELFHOSTDIR}/glider"
+
+if [[ ! -f ${glider}/.done ]] ; then
+    read -rp "Enter username for socks5 proxy: " socks5_username
+    read -srp "Enter password for socks5 proxy: " socks5_password
+    echo
+    read -srp "Enter password for shadowsocks proxy: " ss_password
+    echo
+    sed -i "s/change_username_socks5/$socks5_username/g" ${glider}/compose.yml
+    sed -i "s/change_password_socks5/$socks5_password/g" ${glider}/compose.yml
+    sed -i "s/change_password_shadowsocks/$ss_password/g" ${glider}/compose.yml
+    podman-compose -f ${glider}/compose.yml systemd -a register
+    systemctl --user enable 'podman-compose@glider'
+    touch ${glider}/.done
+fi
+
+systemctl --user start 'podman-compose@glider'

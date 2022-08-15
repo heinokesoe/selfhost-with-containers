@@ -1,0 +1,21 @@
+#!/bin/bash
+
+source ~/.bashrc
+
+mirotalk="${SELFHOSTDIR}/mirotalk"
+
+if [[ ! -f ${mirotalk}/.done ]] ; then
+    read -rp "Enter domain name for mirotalk: " domain
+    secret=$(openssl rand -hex 16)
+    turndomain=$(cat ${SELFHOSTDIR}/coturn/.domain)
+    turnpassword=$(cat ${SELFHOSTDIR}/coturn/.password)
+    sed -i "s/change_password/$turnpassword/g" ${mirotalk}/mirotalk.env
+    sed -i "s/change_domain/$turndomain/g" ${mirotalk}/mirotalk.env
+    sed -i "s/change_secret/$secret/g" ${mirotalk}/mirotalk.env
+    sed -i "s/change_domain_mirotalk/$domain/g" ${SELFHOSTDIR}/traefik/dynamic.yml
+    podman-compose -f ${mirotalk}/compose.yml systemd -a register
+    systemctl --user enable 'podman-compose@mirotalk'
+    touch ${mirotalk}/.done
+fi
+
+systemctl --user start 'podman-compose@mirotalk'

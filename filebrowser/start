@@ -1,0 +1,15 @@
+#!/bin/bash
+
+source ~/.bashrc
+
+filebrowser="${SELFHOSTDIR}/filebrowser"
+
+if [[ ! -f ${filebrowser}/.done ]] ; then
+    read -rp "Enter domain name for filebrowser: " domain
+    sed -i "s/change_domain_filebrowser/$domain/g" ${SELFHOSTDIR}/traefik/dynamic.yml
+    podman-compose -f ${filebrowser}/compose.yml systemd -a register
+    systemctl --user enable 'podman-compose@filebrowser'
+    touch ${filebrowser}/.done
+fi
+
+systemctl --user start 'podman-compose@filebrowser'
